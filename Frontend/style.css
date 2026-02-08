@@ -1,0 +1,413 @@
+/* Базовые настройки */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body,
+html {
+  width: 100%;
+  height: 100%;
+  font-family: 'Inter', sans-serif;
+  background-color: #000;
+  overflow: hidden;
+  /* Чтобы не было полос прокрутки из-за эффектов */
+}
+
+/* Главная секция */
+.hero-section {
+  width: 100%;
+  height: 100vh;
+  /* Регулируем яркость здесь: brightness(1.2) делает чуть светлее оригинала */
+  background: url('background-photo.jpg') center/cover no-repeat;
+  /*filter: brightness()*/
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+}
+
+/* Контейнер контента */
+.content-wrapper {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1000px;
+  padding-left: 100px;
+  padding-top: 5vh;
+}
+
+/* Заголовок с эффектом двоения при наведении (VHS style) */
+.main-title {
+  font-family: 'Megrim', cursive;
+  font-size: 10vw;
+  font-weight: normal;
+  color: #fff;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  cursor: default;
+}
+
+.main-title:hover {
+  /* Эффект двоения: красный сдвиг влево, синий вправо */
+  text-shadow:
+    -3px 0 0 rgba(255, 0, 0, 0.081),
+    3px 0 0 rgba(81, 81, 81, 0.7);
+  transform: skewX(-1deg);
+}
+
+.subtitle {
+  font-family: 'Megrim', cursive;
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 4px;
+  margin-bottom: 20px;
+}
+
+/* Форма */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  max-width: 350px;
+  margin-top: 60px;
+}
+
+/* Эффект наведения на поля ввода */
+.input-group input {
+  width: 100%;
+  padding: 12px 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.input-group input:hover {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+  padding-left: 5px;
+  /* Легкое смещение при наведении */
+}
+
+.input-group input:focus {
+  border-bottom: 1px solid #fff;
+  box-shadow: 0 5px 15px -5px rgba(255, 255, 255, 0.2);
+}
+
+/* Кнопка с глитч-эффектом при наведении */
+.login-btn {
+  margin-top: 20px;
+  padding: 18px;
+  background-color: #fff;
+  color: #000;
+  border: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+
+.login-btn:hover {
+  background-color: #f0f0f0;
+  /* Тень, создающая объем */
+  box-shadow:
+    5px 5px 0px #a2a2a2,
+    -5px -5px 0px #929292;
+  transform: translate(2px, 2px);
+}
+
+.login-btn:active {
+  transform: scale(0.98);
+}
+
+
+
+/* --- СТИЛИ ДЛЯ СТРАНИЦЫ ГОЛОСОВАНИЯ (voting.html) --- */
+
+/* Приветствие пользователя */
+.user-greeting {
+  font-family: 'Megrim', cursive;
+  color: #fff;
+  font-size: 1.5rem;
+  letter-spacing: 3px;
+  margin-bottom: 10px;
+  opacity: 0.8;
+}
+
+#display-name {
+  color: #ffffff;
+  /* Выделяем имя красным или другим акцентным цветом */
+  text-shadow: 0 0 10px rgba(251, 251, 251, 0.5);
+}
+
+/* Контейнер таблицы */
+.table-container {
+  margin-top: 40px;
+  width: 100%;
+  max-width: 800px;
+  background: rgba(255, 255, 255, 0.03);
+  /* Легкая подложка */
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  /* Эффект матового стекла */
+}
+
+/* Таблица */
+.music-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #fff;
+}
+
+.music-table th {
+  font-family: 'Megrim', cursive;
+  text-align: left;
+  padding: 15px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  letter-spacing: 2px;
+  font-size: 1.1rem;
+}
+
+.music-table td {
+  padding: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.9rem;
+  font-weight: 300;
+}
+
+/* Кнопка "+" в таблице */
+.mini-vote-btn {
+  background: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.mini-vote-btn:hover {
+  background: #fff;
+  color: #000;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+  transform: scale(1.1);
+}
+
+/* Ссылка на результаты */
+.nav-link {
+  display: inline-block;
+  margin-top: 30px;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  font-family: 'Megrim', cursive;
+  letter-spacing: 2px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+  transition: 0.3s;
+}
+
+.nav-link:hover {
+  color: #fff;
+  border-bottom: 1px solid #fff;
+}
+
+/* Специфический фон для страницы голосования (чтобы не было overflow) */
+.voting-page {
+  overflow-y: auto !important;
+  /* На этой странице скролл нужен, если песен много */
+  background: url('background-photo.jpg') center/cover no-repeat fixed;
+  /* Фиксированный фон */
+}
+
+.voting-page .hero-section {
+  height: auto;
+  min-height: 100vh;
+}
+
+
+
+/* --- СТИЛИ ДЛЯ СТРАНИЦ ГОЛОСОВАНИЯ И РЕЗУЛЬТАТОВ --- */
+
+/* Приветствие пользователя в углу */
+.user-greeting {
+  font-family: 'Megrim', cursive;
+  color: #fff;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+#display-name {
+  color: #ffffff;
+  /* Акцентный красный для имени */
+  font-weight: bold;
+}
+
+/* Таблица в Voting.html */
+.table-container {
+  margin-top: 30px;
+  width: 100%;
+  max-width: 800px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-height: 400px;
+  overflow-y: auto;
+  /* Скролл, если песен будет очень много */
+}
+
+.music-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #fff;
+}
+
+.music-table th {
+  text-align: left;
+  padding: 15px;
+  font-family: 'Megrim', cursive;
+  border-bottom: 2px solid #fff;
+  letter-spacing: 2px;
+}
+
+.music-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.9rem;
+}
+
+/* Кнопка плюса в таблице */
+.mini-vote-btn {
+  background: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mini-vote-btn:hover {
+  background: #fff;
+  color: #000;
+  transform: scale(1.1);
+}
+
+/* Карточки результатов в Results.html */
+.playlist-results {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 600px;
+}
+
+.result-card {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.07);
+  padding: 20px;
+  border-left: 3px solid rgba(255, 255, 255, 0.3);
+  transition: 0.3s;
+}
+
+.result-card.winner {
+  border-left-color: #ffffff;
+  /* Победитель выделен красным */
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.vote-badge {
+  font-family: 'Megrim', cursive;
+  font-size: 2rem;
+  color: #aeabab;
+  margin-right: 25px;
+  min-width: 50px;
+}
+
+.track-meta h3 {
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.track-meta p {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Ссылка "See Results" */
+.nav-link {
+  color: #fff;
+  text-decoration: none;
+  font-family: 'Megrim', cursive;
+  letter-spacing: 2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 5px;
+  transition: 0.3s;
+}
+
+/* --- BOTTOM BUTTONS STYLE (Unified) --- */
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+/* Применяем этот стиль ко всем кнопкам и ссылкам внизу */
+.action-btn {
+  /* Базовый стиль как у Reset */
+  padding: 12px 25px;
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  /* Полупрозрачная рамка */
+  font-family: 'Megrim', cursive;
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  /* Убираем подчеркивание у ссылки */
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 180px;
+  transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* Красный эффект при наведении ТОЛЬКО для кнопки сброса */
+.btn-danger-hover:hover {
+  background: #a19e9e !important;
+  border-color: #2c2c2c !important;
+  color: #fff !important;
+}
+
+/* Адаптивность для мобилок */
+@media (max-width: 600px) {
+  .action-btn {
+    width: 100%;
+  }
+}
+
+.nav-link:hover {
+  border-bottom-color: #fff;
+  opacity: 0.8;
+}

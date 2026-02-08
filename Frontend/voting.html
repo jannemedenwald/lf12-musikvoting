@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Axe and Fire | Vote</title>
+  <link href="https://fonts.googleapis.com/css2?family=Megrim&family=Inter:wght@300;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="voting-page">
+
+  <div class="content-wrapper">
+    <p class="user-greeting">WELCOME, <span id="display-name">GUEST</span></p>
+
+    <h1 class="main-title">VOTE NOW</h1>
+    <p class="subtitle">Last 5 votes count. Choose wisely.</p>
+
+    <form class="login-container add-track-form" id="musicForm">
+      <div class="input-group">
+        <input type="text" id="bandInput" placeholder="Band Name" required>
+      </div>
+      <div class="input-group">
+        <input type="text" id="songInput" placeholder="Song Title" required>
+      </div>
+      <div class="input-group">
+        <input type="text" id="genreInput" placeholder="Genre" required>
+      </div>
+      <button type="submit" class="login-btn" style="margin-top: 20px;">ADD TRACK</button>
+    </form>
+
+    <div class="table-container">
+      <table class="music-table" id="musicTable">
+        <thead>
+          <tr>
+            <th>Band</th>
+            <th>Song</th>
+            <th>Genre</th>
+            <th>Vote</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="button-group">
+      <a href="results.html" class="action-btn">See Results</a>
+
+      <button class="action-btn" onclick="window.location.href='index.html'">Change User</button>
+
+      <button class="action-btn btn-danger-hover"
+        onclick="if(confirm('Reset all data?')){localStorage.clear(); location.reload();}">Reset All Data</button>
+
+    </div>
+  </div>
+  </div>
+
+  <script>
+    const currentUser = localStorage.getItem('userName') || 'Guest';
+    document.getElementById('display-name').innerText = currentUser.toUpperCase();
+
+    const musicForm = document.getElementById('musicForm');
+    const musicTable = document.getElementById('musicTable').getElementsByTagName('tbody')[0];
+
+    // Load data
+    /**
+ * --- JAVA BACKEND INTEGRATION (Spring Boot / Jakarta EE) ---
+ * CURRENT: Browser localStorage.
+ * FUTURE: 
+ * - A Java REST Controller will handle POST requests (e.g., @PostMapping("/api/votes")).
+ * - Each "Track" and "Vote" will be mapped as a Java Entity (@Entity) in Hibernate/JPA.
+ * - Guest names will be stored in a 'User' table with a unique constraint.
+ */
+
+    let playlist = JSON.parse(localStorage.getItem('partyPlaylist')) || [];
+    // Store votes as: { "username": [trackIndex, trackIndex, ...] }
+    let allVotes = JSON.parse(localStorage.getItem('allVotes')) || {};
+
+    function renderTable() {
+      musicTable.innerHTML = '';
+      playlist.forEach((item, index) => {
+        const newRow = musicTable.insertRow();
+        newRow.innerHTML = `
+          <td>${item.band}</td>
+          <td>${item.song}</td>
+          <td>${item.genre}</td>
+          <td><button class="mini-vote-btn" onclick="addVote(${index})">+</button></td>
+        `;
+      });
+    }
+
+    musicForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const newTrack = {
+        band: document.getElementById('bandInput').value,
+        song: document.getElementById('songInput').value,
+        genre: document.getElementById('genreInput').value
+      };
+      playlist.push(newTrack);
+      localStorage.setItem('partyPlaylist', JSON.stringify(playlist));
+      renderTable();
+      musicForm.reset();
+    });
+
+    window.addVote = function (trackIndex) {
+      if (!allVotes[currentUser]) {
+        allVotes[currentUser] = [];
+      }
+
+      // Add vote (index of the song)
+      allVotes[currentUser].push(trackIndex);
+
+      // Save to localStorage
+      localStorage.setItem('allVotes', JSON.stringify(allVotes));
+
+      alert(`Vote recorded! Note: Only your last 5 votes will be counted.`);
+    };
+
+    renderTable();
+  </script>
+</body>
+
+</html>
