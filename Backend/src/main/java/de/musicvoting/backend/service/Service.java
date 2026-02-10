@@ -33,7 +33,7 @@ public class Service {
     public Song songSpeichern(Gast gast, String titel, String band, String genre) {
         // Schritt 1: Prüfen, ob vorschlagener Gast im System angemeldet wurde
         Gast g = gastSpeicher.findById(gast.getID());
-        if (gast != null) {
+        if (g != null) {
             // falls Gast im System registriert ist -> Schritt 2: Song anlegen
             Song song = g.songVorschlagen(titel, band, genre);
             // Schritt 3: Song speichern
@@ -52,7 +52,7 @@ public class Service {
         }
         // Schritt 2: Prüfen, ob der Song zum Voten existiert
         Song s = songSpeicher.findById(song.getID());
-        if (song == null) {
+        if (s == null) {
             throw new IllegalArgumentException("Song existiert nicht");
         }
         // Schritt 3: Vote anlegen
