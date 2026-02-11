@@ -1,0 +1,91 @@
+// Gäste anlegen
+
+fetch("http://localhost:8080/api/gast", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    vorname: "Mickey",
+    nachname: "Mouse"
+  })
+})
+  .then(r => r.json())
+  .then(console.log);
+
+fetch("http://localhost:8080/api/gast", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    vorname: "Donald",
+    nachname: "Duck"
+  })
+})
+  .then(r => r.json())
+  .then(console.log);
+
+fetch("http://localhost:8080/api/gast", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    vorname: "Daniel",
+    nachname: "Düsentrieb"
+  })
+})
+  .then(r => r.json())
+  .then(console.log);
+
+
+
+// Songs anlegen
+
+fetch("http://localhost:8080/api/song", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    gastId: "1",
+    titel: "Yellow Submarine",
+    band: "Beatles",
+    genre: "Pop"
+  })
+})
+  .then(r => r.json())
+  .then(console.log);
+
+fetch("http://localhost:8080/api/song", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    gastId: "1",
+    titel: "Imagine",
+    band: "John Lennon",
+    genre: "Pop"
+  })
+})
+  .then(r => r.json())
+  .then(console.log);
+
+fetch("http://localhost:8080/api/song", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    gastId: "2",
+    titel: "Anton aus Tirol",
+    band: "DJ Ötzi",
+    genre: "Schlager"
+  })
+})
+  .then(r => r.json())
+  .then(console.log);
+
+
+// Votes
+
+fetch("http://localhost:8080/api/vote", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    gastId: "1",
+    songId: "1"
+  })
+})
+  .then(r => r.json())
+  .then(console.log);

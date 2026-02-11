@@ -1,0 +1,14 @@
+### Alle Songs abfragen
+GET http://localhost:8080/api/songs
+
+### Gast anlegen
+POST http://localhost:8080/api/gast
+Content-Type: application/json
+
+{
+  "vorname": "Mickey",
+  "nachname": "Mouse"
+}
+
+### Playlist abfragen
+GET http://localhost:8080/api/playlist
