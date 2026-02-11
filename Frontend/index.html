@@ -29,17 +29,41 @@
   </section>
 
   <script>
-    document.getElementById('loginForm').addEventListener('submit', function (e) {
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
       e.preventDefault();
 
+      // 1. Mapping data (vorname, nachname) to match Backend Gast entity
+      const guestData = {
+        vorname: document.getElementById('firstName').value,
+        nachname: document.getElementById('lastName').value
+      };
 
-      const firstName = document.getElementById('firstName').value;
+      try {
+        // 2. Send request to Spring Boot Backend
+        const response = await fetch('http://localhost:8080/api/gast', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(guestData)
+        });
 
+        if (response.ok) {
+          const registeredGuest = await response.json();
 
-      localStorage.setItem('userName', firstName);
+          // 3. Store ID and Name for session management
+          sessionStorage.setItem('myId', registeredGuest.id);
+          sessionStorage.setItem('userName', registeredGuest.vorname);
 
-
-      window.location.href = 'voting.html';
+          // 4. Redirect to voting page
+          window.location.href = 'voting.html';
+        } else {
+          alert('Registration failed. Please ensure the backend is running!');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Server connection failed. Make sure Spring Boot is active.');
+      }
     });
   </script>
 
