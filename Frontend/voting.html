@@ -58,67 +58,104 @@
   </div>
 
   <script>
-    const currentUser = localStorage.getItem('userName') || 'Guest';
+    // 1. Initialize session data
+    const currentUser = sessionStorage.getItem('userName') || 'Guest';
+    const myId = sessionStorage.getItem('myId');
     document.getElementById('display-name').innerText = currentUser.toUpperCase();
 
     const musicForm = document.getElementById('musicForm');
     const musicTable = document.getElementById('musicTable').getElementsByTagName('tbody')[0];
+    const API_URL = 'http://localhost:8080/api';
 
-    // Load data
-    /**
- * --- JAVA BACKEND INTEGRATION (Spring Boot / Jakarta EE) ---
- * CURRENT: Browser localStorage.
- * FUTURE: 
- * - A Java REST Controller will handle POST requests (e.g., @PostMapping("/api/votes")).
- * - Each "Track" and "Vote" will be mapped as a Java Entity (@Entity) in Hibernate/JPA.
- * - Guest names will be stored in a 'User' table with a unique constraint.
- */
+    // 2. Load all songs from server (GET /api/songs)
+    async function loadSongs() {
+      try {
+        const response = await fetch(`${API_URL}/songs`);
+        const songs = await response.json();
+        renderTable(songs);
+      } catch (error) {
+        console.error('Error loading songs:', error);
+      }
+    }
 
-    let playlist = JSON.parse(localStorage.getItem('partyPlaylist')) || [];
-    // Store votes as: { "username": [trackIndex, trackIndex, ...] }
-    let allVotes = JSON.parse(localStorage.getItem('allVotes')) || {};
-
-    function renderTable() {
+    // 3. Render table using IDs from the database
+    function renderTable(songs) {
       musicTable.innerHTML = '';
-      playlist.forEach((item, index) => {
+      songs.forEach((item) => {
         const newRow = musicTable.insertRow();
         newRow.innerHTML = `
-          <td>${item.band}</td>
-          <td>${item.song}</td>
-          <td>${item.genre}</td>
-          <td><button class="mini-vote-btn" onclick="addVote(${index})">+</button></td>
+            <td>${item.band}</td>
+            <td>${item.titel}</td> <td>${item.genre}</td>
+            <td><button class="mini-vote-btn" onclick="addVote('${item.id}')">+</button></td>
         `;
       });
     }
 
-    musicForm.addEventListener('submit', function (e) {
+    // 4. Add new song (POST /api/song)
+    musicForm.addEventListener('submit', async function (e) {
       e.preventDefault();
-      const newTrack = {
-        band: document.getElementById('bandInput').value,
-        song: document.getElementById('songInput').value,
-        genre: document.getElementById('genreInput').value
-      };
-      playlist.push(newTrack);
-      localStorage.setItem('partyPlaylist', JSON.stringify(playlist));
-      renderTable();
-      musicForm.reset();
-    });
 
-    window.addVote = function (trackIndex) {
-      if (!allVotes[currentUser]) {
-        allVotes[currentUser] = [];
+      if (!myId) {
+        alert("Session expired. Please login again.");
+        window.location.href = 'index.html';
+        return;
       }
 
-      // Add vote (index of the song)
-      allVotes[currentUser].push(trackIndex);
+      const songData = {
+        gastId: myId,
+        titel: document.getElementById('songInput').value,
+        band: document.getElementById('bandInput').value,
+        genre: document.getElementById('genreInput').value
+      };
 
-      // Save to localStorage
-      localStorage.setItem('allVotes', JSON.stringify(allVotes));
+      try {
+        const response = await fetch(`${API_URL}/song`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(songData)
+        });
 
-      alert(`Vote recorded! Note: Only your last 5 votes will be counted.`);
+        if (response.ok) {
+          musicForm.reset();
+          loadSongs(); // Refresh list from server
+        } else {
+          alert("Error saving song. Check backend constraints.");
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    });
+
+    // 5. Submit vote (POST /api/vote)
+    window.addVote = async function (songId) {
+      if (!myId) {
+        alert("Please login to vote.");
+        return;
+      }
+
+      const voteRequest = {
+        gastId: myId,
+        songId: songId
+      };
+
+      try {
+        const response = await fetch(`${API_URL}/vote`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(voteRequest)
+        });
+
+        if (response.ok) {
+          alert(`Vote recorded!`);
+        } else {
+          alert("Vote failed. You might have exceeded your limit.");
+        }
+      } catch (error) {
+        console.error('Voting error:', error);
+      }
     };
 
-    renderTable();
+    loadSongs();
   </script>
 </body>
 
