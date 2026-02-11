@@ -25,78 +25,58 @@
   </div>
 
   <script>
-    function displayResults() {
+    async function displayResults() {
       const output = document.getElementById('output');
+      const API_URL = 'http://localhost:8080/api';
 
-      // 1. Get raw data from storage
+      try {
 
-      /**
-   * --- JAVA BACKEND INTEGRATION (Business Logic) ---
-   * CURRENT: JavaScript processes the "Last 5" filter.
-   * FUTURE: 
-   * - The backend Service Layer (Java) will calculate the results.
-   * - Logic: Using JPQL or Native SQL to fetch only the 5 most recent votes per user.
-   * - The frontend will simply receive a clean List<TrackDTO> via a GET request (@GetMapping).
-   */
+        const response = await fetch(`${API_URL}/playlist`);
+        if (!response.ok) throw new Error('Server error');
 
+        const playlistData = await response.json();
 
-      const playlist = JSON.parse(localStorage.getItem('partyPlaylist')) || [];
-      const allVotes = JSON.parse(localStorage.getItem('allVotes')) || {};
+        const songs = Array.isArray(playlistData) ? playlistData : (playlistData.songs || []);
 
-      // 2. Calculation logic
-      let finalCounts = {};
+        output.innerHTML = '';
 
-      // Process each user individually
-      Object.keys(allVotes).forEach(user => {
-        // Strict Rule: Slice ONLY the last 5 actions of this user
-        const userHistory = allVotes[user];
-        const userLastFive = userHistory.slice(-5);
-
-        userLastFive.forEach(trackIndex => {
-          // Add to the total count for this track
-          finalCounts[trackIndex] = (finalCounts[trackIndex] || 0) + 1;
-        });
-      });
-
-      // 3. Transform into displayable array
-      let results = [];
-      playlist.forEach((item, index) => {
-        // Rule: Only show if the track has at least 1 valid vote from the "last 5" filter
-        if (finalCounts[index] > 0) {
-          results.push({
-            band: item.band,
-            song: item.song,
-            genre: item.genre,
-            votes: finalCounts[index]
-          });
+        if (songs.length === 0) {
+          output.innerHTML = '<p class="subtitle">No valid votes yet. Go back and vote!</p>';
+          return;
         }
-      });
 
-      // 4. Sort: Most votes at the top
-      results.sort((a, b) => b.votes - a.votes);
 
-      // 5. Render to HTML
-      output.innerHTML = ''; // Force clear before rendering
+        songs.forEach((item, index) => {
+          const isWinner = index === 0 ? 'winner' : '';
 
-      if (results.length === 0) {
-        output.innerHTML = '<p class="subtitle">No valid votes yet. Go back and vote!</p>';
-        return;
+          const voteCount = item.votes !== undefined ? item.votes : (item.anzahlStimmen || item.voteCount || 0);
+
+          output.innerHTML += `
+                    <div class="result-card ${isWinner}">
+                        <div class="vote-badge">${voteCount}</div>
+                        <div class="track-meta">
+                            <h3>${item.band}</h3>
+                            <p>${item.titel || item.song} | ${item.genre}</p> 
+                        </div>
+                    </div>`;
+        });
+
+      } catch (error) {
+        console.error('Error:', error);
+        output.innerHTML = '<p class="subtitle" style="color: red;">Failed to load results. Check if backend is running.</p>';
       }
-
-      results.forEach((item, index) => {
-        const isWinner = index === 0 ? 'winner' : '';
-        output.innerHTML += `
-          <div class="result-card ${isWinner}">
-            <div class="vote-badge">${item.votes}</div>
-            <div class="track-meta">
-              <h3>${item.band}</h3>
-              <p>${item.song} | ${item.genre}</p>
-            </div>
-          </div>`;
-      });
     }
 
-    // Run calculation on load
+
+    window.resetData = function () {
+      if (confirm('Reset local session? To clear all server data, restart the Spring Boot application.')) {
+        sessionStorage.clear();
+        localStorage.clear();
+        location.reload();
+      }
+    };
+
+
     displayResults();
   </script>
 </body>
